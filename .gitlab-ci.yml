@@ -29,6 +29,8 @@ build:
   stage: build
   image: docker
   retry: 2
+  tags:
+    - build-docker
   script:
     - docker login -u "$CI_BUILD_USER"  -p "$CI_BUILD_TOKEN" $CONTAINER_IMAGE
     - docker build --pull -t $CONTAINER_IMAGE  --build-arg ARG_GOPROXY="$ARG_GOPROXY" --build-arg ARG_PROJECT_NAME=$CI_PROJECT_NAME --build-arg ARG_CI_BUILD_INFO="$CI_BUILD_INFO" .
@@ -39,6 +41,8 @@ build:
 test:
   stage: test
   image: golang
+  tags:
+    - docker
   allow_failure: true
   script:
     - go test -v ./...
@@ -57,11 +61,14 @@ coverage:
 deploy-testing:
   stage: deploy
   image: dtzar/helm-kubectl
+  tags:
+    - docker
   environment:
     name: testing
   script:
     - echo ${CI_PROJECT_PATH_SLUG}
     - echo ${CI_ENVIRONMENT_SLUG}
+    - echo ${KUBE_NAMESPACE}
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials ${DEPLOY_USER} --token="${USER_TOKEN}"
@@ -70,7 +77,8 @@ deploy-testing:
     - sed -i "s|CONTAINER_IMAGE|${CONTAINER_IMAGE}|g" ${DEPLOY_YAML}
     - sed -i "s|CI_PROJECT_PATH_SLUG|${CI_PROJECT_PATH_SLUG}|g" ${DEPLOY_YAML}
     - sed -i "s|CI_ENVIRONMENT_SLUG|${CI_ENVIRONMENT_SLUG}|g" ${DEPLOY_YAML}
-    - kubectl apply -f ${DEPLOY_YAML}
+    - sed -i "s|KUBE_NAMESPACE|${KUBE_NAMESPACE}|g" ${DEPLOY_YAML}
+    - kubectl apply -f ${DEPLOY_YAML
   only:
     - master
 
@@ -78,9 +86,12 @@ deploy-testing:
 deploy-prod:
   stage: deploy
   image: dtzar/helm-kubectl
+  tags:
+    - docker
   script:
     - echo ${CI_PROJECT_PATH_SLUG}
     - echo ${CI_ENVIRONMENT_SLUG}
+    - echo ${KUBE_NAMESPACE}
     - kubectl config set-cluster k8s --server="${SERVER}"
     - kubectl config set clusters.k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
     - kubectl config set-credentials ${DEPLOY_USER} --token="${USER_TOKEN}"
@@ -89,6 +100,7 @@ deploy-prod:
     - sed -i "s|CONTAINER_IMAGE|${CONTAINER_IMAGE}|g" ${DEPLOY_YAML}
     - sed -i "s|CI_PROJECT_PATH_SLUG|${CI_PROJECT_PATH_SLUG}|g" ${DEPLOY_YAML}
     - sed -i "s|CI_ENVIRONMENT_SLUG|${CI_ENVIRONMENT_SLUG}|g" ${DEPLOY_YAML}
+    - sed -i "s|KUBE_NAMESPACE|${KUBE_NAMESPACE}|g" ${DEPLOY_YAML}
     - kubectl apply -f ${DEPLOY_YAML}
   when: manual
   environment:

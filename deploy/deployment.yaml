@@ -2,8 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cat-websrv
+  namespace: KUBE_NAMESPACE
   labels:
     app: cat-websrv
+  annotations:
+    app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+    app.gitlab.com/app: CI_PROJECT_PATH_SLUG
 spec:
   replicas: 3
   selector:
@@ -18,12 +22,14 @@ spec:
     metadata:
       labels:
         app: cat-websrv
+      annotations:
+        app.gitlab.com/env: CI_ENVIRONMENT_SLUG
+        app.gitlab.com/app: CI_PROJECT_PATH_SLUG
     spec:
       containers:
         - name: cat-websrv
           image: CONTAINER_IMAGE
           ports:
-
             - containerPort: 8080
           livenessProbe:
             httpGet:
