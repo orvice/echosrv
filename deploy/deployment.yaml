@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cat-websrv
+  labels:
+    app: cat-websrv
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cat-websrv
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 33%
+  template:
+    metadata:
+      labels:
+        app: cat-websrv
+    spec:
+      containers:
+        - name: cat-websrv
+          image: CONTAINER_IMAGE
+          ports:
+
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 2
