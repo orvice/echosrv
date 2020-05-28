@@ -78,7 +78,7 @@ deploy-testing:
     - sed -i "s|CI_PROJECT_PATH_SLUG|${CI_PROJECT_PATH_SLUG}|g" ${DEPLOY_YAML}
     - sed -i "s|CI_ENVIRONMENT_SLUG|${CI_ENVIRONMENT_SLUG}|g" ${DEPLOY_YAML}
     - sed -i "s|KUBE_NAMESPACE|${KUBE_NAMESPACE}|g" ${DEPLOY_YAML}
-    - kubectl apply -f ${DEPLOY_YAML
+    - kubectl apply -f ${DEPLOY_YAML}
   only:
     - master
 
