@@ -17,4 +17,4 @@ build: ## build
 	CGO_ENABLED=0 go build -o $(APP_BINARY) -v cmd/$(APP_NAME)/main.go
 
 doc:
-	swag init -g  ./cmd/websrv
+	swagger generate spec -w ./cmd/webserv  -o ./swagger.json
