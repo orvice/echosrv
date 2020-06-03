@@ -16,3 +16,5 @@ test: ## test
 build: ## build
 	CGO_ENABLED=0 go build -o $(APP_BINARY) -v cmd/$(APP_NAME)/main.go
 
+doc:
+	swagger generate spec -o ./swagger.json -b ./cmd/websrv

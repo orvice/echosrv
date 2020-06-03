@@ -19,10 +19,15 @@ variables:
   POSTGRES_DB: test-${CI_BUILD_REF}
   POSTGRES_PASSWORD: gorma
 
+  DOC_FILE: swagger.json
+
 stages:
   - build
   - deploy
+  - doc
+  - pages
   - test
+
 
 
 build:
@@ -97,3 +102,29 @@ deploy-prod:
     name: production
   only:
     - tag
+
+doc:
+  stage: doc
+  image: golang
+  script:
+    - go mod download
+    - go get -u github.com/swaggo/swag/cmd/swag
+    - make doc
+  artifacts:
+    name: doc
+    paths:
+      - $DOC_FILE
+  only:
+  - master
+
+pages:
+  stage: pages
+  image: node
+  script:
+  - npm install -g redoc-cli
+  - redoc-cli bundle -o public/index.html documentation/openapi.yaml
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
