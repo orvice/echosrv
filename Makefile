@@ -7,6 +7,9 @@ APP_BINARY_UNIX=bin/$(APP_NAME)_unix_amd64
 
 all: build
 
+prepare:
+	go mod tidy
+
 .PHONY: test
 test: ## test
 	go test -v ./...
