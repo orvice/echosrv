@@ -1,6 +1,11 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	_ "github.com/go-swagger/go-swagger/examples/stream-server/restapi"
+	_ "github.com/go-swagger/go-swagger/examples/stream-server/restapi/operations"
+)
+
 
 func main() {
 	r := gin.Default()
