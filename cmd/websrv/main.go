@@ -2,8 +2,9 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-2/restapi"
-	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-2/restapi/operations"
+	
+	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
+	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi/operations"
 )
 
 
