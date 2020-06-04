@@ -2,7 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-swagger/go-swagger/examples/2.0/petstore/server/api"
+	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-2/restapi"
+	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-2/restapi/operations"
 )
 
 
