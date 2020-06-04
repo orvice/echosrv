@@ -108,6 +108,7 @@ doc:
   image: golang
   script:
     - go mod download
+    - make prepare
     - go get -u github.com/swaggo/swag/cmd/swag
     - download_url="https://github.com/go-swagger/go-swagger/releases/download/v0.23.0/swagger_linux_amd64"
     - curl -o /usr/local/bin/swagger -L'#' "$download_url"
