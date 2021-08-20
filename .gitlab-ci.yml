@@ -22,11 +22,12 @@ variables:
   DOC_FILE: swagger.json
 
 stages:
+  - test
   - doc
   - pages
   - build
   - deploy
-  - test
+
 
 
 
