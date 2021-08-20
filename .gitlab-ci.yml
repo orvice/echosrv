@@ -42,7 +42,7 @@ build:
     - docker tag $CONTAINER_IMAGE $CONTAINER_IMAGE_LATEST && docker push $CONTAINER_IMAGE_LATEST
 
 test:
-  stage: test
+  stage: registry.gitlab.com/orvice/golang
   image: golang
   allow_failure: true
   script:
