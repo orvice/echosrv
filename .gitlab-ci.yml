@@ -87,7 +87,7 @@ coverage:
     - make test
   parallel:
       matrix:
-        - version: [1.17, 1.16, 1.15]
+        - version: ["1.17", "1.16", "1.15"]
 
 deploy-testing:
   stage: deploy
