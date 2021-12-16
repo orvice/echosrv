@@ -56,7 +56,9 @@ coverage:
   script:
     - go install github.com/axw/gocov/gocov
     - make test
-
+  parallel:
+      matrix:
+        - PLATFORM: [windows, mac, linux]
 
 deploy-testing:
   stage: deploy
