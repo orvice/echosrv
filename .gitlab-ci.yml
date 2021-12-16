@@ -80,14 +80,14 @@ hub_docker_quota_check:
 
 coverage:
   stage: test
-  image: golang
+  image: golang:$version
   allow_failure: true
   script:
     - go install github.com/axw/gocov/gocov
     - make test
   parallel:
       matrix:
-        - PLATFORM: [windows, mac, linux]
+        - version: [1.17, 1.16, 1.15]
 
 deploy-testing:
   stage: deploy
