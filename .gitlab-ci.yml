@@ -1,8 +1,3 @@
-image: docker:latest
-
-services:
-  - docker:dind
-
 variables:
   CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_BUILD_REF_NAME}-${CI_BUILD_REF}
   CONTAINER_IMAGE_BRANCH:  ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_BUILD_REF_NAME}
@@ -27,9 +22,6 @@ stages:
   - pages
   - build
   - deploy
-
-
-
 
 build:docker:
   # Use the official docker image.
@@ -73,10 +65,6 @@ hub_docker_quota_check:
     script:
       - |
         TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq --raw-output .token) && curl --head --header "Authorization: Bearer $TOKEN" "https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest" 2>&1
-
-
-
-
 
 coverage:
   stage: test
