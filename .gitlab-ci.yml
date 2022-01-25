@@ -73,9 +73,11 @@ coverage:
   script:
     - go install github.com/axw/gocov/gocov
     - make test
+    - echo $versino $arch
   parallel:
       matrix:
         - version: ["1.17", "1.16", "1.15"]
+        - arch: ["amd64", "386"]
 
 deploy-testing:
   stage: deploy
