@@ -55,6 +55,8 @@ test:unittest:
   image: registry.gitlab.com/orvice/golang
   allow_failure: true
   script:
+    - pwd
+    - echo $CI_BUILDS_DIR
     - go test -v ./...
 
 hub_docker_quota_check:
