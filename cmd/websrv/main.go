@@ -2,11 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	
+
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi/operations"
 )
-
 
 func main() {
 	r := gin.Default()
