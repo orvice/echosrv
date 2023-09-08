@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"go.orx.me/websrv/internal/handler"
 	"go.orx.me/websrv/internal/meter"
 
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
@@ -23,5 +24,6 @@ func main() {
 			"message": "pong",
 		})
 	})
+	r.GET("/asc/:text", handler.ASC)
 	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
