@@ -14,7 +14,7 @@ RUN make build
 
 FROM orvice/go-runtime
 
-ENV PROJECT_NAME websrv
+ENV PROJECT_NAME echosrv
 
 COPY --from=builder /home/app/bin/${PROJECT_NAME} /home/app/bin/${PROJECT_NAME}
 ENTRYPOINT /home/app/bin/${PROJECT_NAME}

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := build
 
-APP_NAME=websrv
+APP_NAME=echosrv
 APP_CMD_DIR=cmd/$(APP_NAME)
 APP_BINARY=bin/$(APP_NAME)
 APP_BINARY_UNIX=bin/$(APP_NAME)_unix_amd64
@@ -20,4 +20,4 @@ build: ## build
 	CGO_ENABLED=0 go build -o $(APP_BINARY) -v cmd/$(APP_NAME)/main.go
 
 doc:
-	/usr/local/bin/swagger generate spec -w ./cmd/websrv  -o ./swagger.json
+	/usr/local/bin/swagger generate spec -w ./cmd/echosrv  -o ./swagger.json
