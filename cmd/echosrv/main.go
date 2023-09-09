@@ -4,7 +4,7 @@ import (
 	"butterfly.orx.me/core"
 	"butterfly.orx.me/core/app"
 	"github.com/gin-gonic/gin"
-	"go.orx.me/websrv/internal/handler"
+	"go.orx.me/echosrv/internal/handler"
 
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi/operations"

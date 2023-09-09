@@ -1,4 +1,4 @@
-module go.orx.me/websrv
+module go.orx.me/echosrv
 
 go 1.21.0
 
@@ -9,6 +9,8 @@ require (
 )
 
 require (
+	butterfly.orx.me/core v0.0.0-20230909063130-6ab8a3bd73bd
+	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/prometheus/client_golang v1.16.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.40.0
 	go.opentelemetry.io/otel/metric v1.17.0
@@ -16,7 +18,6 @@ require (
 )
 
 require (
-	butterfly.orx.me/core v0.0.0-20230909063130-6ab8a3bd73bd // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
@@ -25,7 +26,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
-	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be // indirect
 	github.com/docker/go-units v0.4.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

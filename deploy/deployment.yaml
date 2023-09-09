@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cat-websrv
+  name: cat-echosrv
   namespace: KUBE_NAMESPACE
   labels:
-    app: cat-websrv
+    app: cat-echosrv
   annotations:
     app.gitlab.com/env: CI_ENVIRONMENT_SLUG
     app.gitlab.com/app: CI_PROJECT_PATH_SLUG
@@ -12,7 +12,7 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: cat-websrv
+      app: cat-echosrv
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,13 +21,13 @@ spec:
   template:
     metadata:
       labels:
-        app: cat-websrv
+        app: cat-echosrv
       annotations:
         app.gitlab.com/env: CI_ENVIRONMENT_SLUG
         app.gitlab.com/app: CI_PROJECT_PATH_SLUG
     spec:
       containers:
-        - name: cat-websrv
+        - name: cat-echosrv
           image: CONTAINER_IMAGE
           ports:
             - containerPort: 8080
