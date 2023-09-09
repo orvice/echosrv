@@ -9,7 +9,7 @@ require (
 )
 
 require (
-	butterfly.orx.me/core v0.0.0-20230909063130-6ab8a3bd73bd
+	butterfly.orx.me/core v0.0.0-20230909075100-99d49a7d2eda
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/prometheus/client_golang v1.16.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.40.0
