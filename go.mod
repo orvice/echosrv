@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	butterfly.orx.me/core v0.0.0-20230909030534-286483d6348a // indirect
+	butterfly.orx.me/core v0.0.0-20230909063130-6ab8a3bd73bd // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
