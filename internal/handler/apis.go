@@ -3,11 +3,12 @@ package handler
 import (
 	"time"
 
+	"log/slog"
+
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.orx.me/echosrv/internal/db"
-	"golang.org/x/exp/slog"
 )
 
 func Router(r *gin.Engine) {
