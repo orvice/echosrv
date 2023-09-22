@@ -1,9 +1,8 @@
 package handler
 
 import (
-	"time"
-
 	"log/slog"
+	"time"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"

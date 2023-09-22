@@ -13,6 +13,7 @@ require (
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/prometheus/client_golang v1.16.0
+	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.2
 	go.opentelemetry.io/otel/exporters/prometheus v0.40.0
 	go.opentelemetry.io/otel/metric v1.17.0
 	go.opentelemetry.io/otel/sdk/metric v0.40.0
