@@ -27,6 +27,7 @@ func Ping(c *gin.Context) {
 	go db.Ping()
 	c.JSON(200, gin.H{
 		"message": "pong",
+		"headers": c.Request.Header,
 	})
 }
 
