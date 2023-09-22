@@ -4,7 +4,14 @@ import (
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
+	"go.orx.me/echosrv/internal/db"
 )
+
+func Router(r *gin.Engine) {
+	r.GET("/ping", Ping)
+	r.GET("/healthz", Ping)
+	r.GET("/asc/:text", ASC)
+}
 
 // Package-level tracer.
 // This should be configured in your code setup instead of here.
@@ -14,6 +21,7 @@ func Ping(c *gin.Context) {
 	_, span := tracer.Start(c.Request.Context(), "sleep")
 	defer span.End()
 
+	go db.Ping()
 	c.JSON(200, gin.H{
 		"message": "pong",
 	})
