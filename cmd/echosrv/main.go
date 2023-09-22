@@ -4,6 +4,7 @@ import (
 	"butterfly.orx.me/core"
 	"butterfly.orx.me/core/app"
 	"github.com/gin-gonic/gin"
+	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/handler"
 
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
@@ -12,6 +13,7 @@ import (
 
 func router(r *gin.Engine) {
 	r.GET("/ping", func(c *gin.Context) {
+		go db.Ping()
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
