@@ -6,9 +6,11 @@ import (
 	"log/slog"
 	"os"
 
+	entsql "entgo.io/ent/dialect/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/uptrace/opentelemetry-go-extra/otelsql"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	"go.orx.me/echosrv/ent"
 )
 
 var (
@@ -24,6 +26,23 @@ func Init() {
 	if err != nil {
 		slog.Error("failed to connect", "error", err)
 	}
+
+	cli := EntClient()
+	err = cli.Schema.Create(context.Background())
+	if err != nil {
+		slog.Error("failed to create schema", "error", err)
+	}
+}
+
+func EntDrv() *entsql.Driver {
+	drv := entsql.OpenDB("mysql", db)
+	return drv
+}
+
+func EntClient() *ent.Client {
+	drv := EntDrv()
+	cli := ent.NewClient(ent.Driver(drv))
+	return cli
 }
 
 func Ping(ctx context.Context) {
