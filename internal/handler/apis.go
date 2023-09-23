@@ -50,7 +50,7 @@ func loggingMiddleware(c *gin.Context) {
 	buf := bytes.NewReader(b)
 	bucketName := os.Getenv("MINIO_BUCKET_NAME")
 
-	ojbectName := fmt.Sprintf("%s/%s", time.Now().Format("2006/01/02"), uuid)
+	ojbectName := fmt.Sprintf("accesslogs/%s/%s", time.Now().Format("2006/01/02"), uuid)
 
 	info, err := object.Client.PutObject(c.Request.Context(), bucketName, ojbectName, buf, int64(len(b)), minio.PutObjectOptions{})
 	if err != nil {
@@ -65,6 +65,7 @@ func loggingMiddleware(c *gin.Context) {
 		slog.String("client_ip", c.ClientIP()),
 		slog.String("uuid", uuid),
 		slog.String("object.key", info.Key),
+		slog.String("object.etag", info.ETag),
 	)
 }
 
