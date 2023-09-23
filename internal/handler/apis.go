@@ -23,8 +23,14 @@ var tracer = otel.Tracer("handler")
 func Ping(c *gin.Context) {
 	_, span := tracer.Start(c.Request.Context(), "sleep")
 	defer span.End()
-	slog.Info("ping", slog.Time("start", time.Now()))
-	go db.Ping(c.Request.Context())
+	slog.Info("ping",
+		slog.Time("start", time.Now()),
+		slog.String("client_ip", c.ClientIP()),
+		slog.String("method", c.Request.Method),
+		slog.String("path", c.Request.URL.Path),
+		slog.String("user-agent", c.Request.UserAgent()),
+	)
+	db.Ping(c.Request.Context())
 	c.JSON(200, gin.H{
 		"message": "pong",
 		"headers": c.Request.Header,
