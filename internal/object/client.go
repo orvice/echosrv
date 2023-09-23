@@ -2,10 +2,12 @@ package object
 
 import (
 	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 var (
@@ -20,8 +22,9 @@ func Init() {
 	var err error
 	// Initialize minio client object.
 	Client, err = minio.New(endpoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
-		Secure: useSSL,
+		Creds:     credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+		Secure:    useSSL,
+		Transport: otelhttp.NewTransport(http.DefaultTransport),
 	})
 	if err != nil {
 		slog.Error("failed to create minio client", "error", err.Error())
