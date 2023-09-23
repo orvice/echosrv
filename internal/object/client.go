@@ -26,5 +26,4 @@ func Init() {
 	if err != nil {
 		slog.Error("failed to create minio client", "error", err.Error())
 	}
-
 }

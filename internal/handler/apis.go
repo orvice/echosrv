@@ -1,14 +1,20 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"log/slog"
+	"os"
 	"time"
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/minio/minio-go/v7"
 	"go.opentelemetry.io/otel"
 	"go.orx.me/echosrv/internal/db"
+	"go.orx.me/echosrv/internal/object"
 )
 
 func Router(r *gin.Engine) {
@@ -34,12 +40,31 @@ func loggingMiddleware(c *gin.Context) {
 		slog.Error("failed to create access log", "error", err)
 		return
 	}
+
+	b, err := json.Marshal(log)
+	if err != nil {
+		slog.Error("failed to marshal access log", "error", err)
+		return
+	}
+
+	buf := bytes.NewReader(b)
+	bucketName := os.Getenv("MINIO_BUCKET_NAME")
+
+	ojbectName := fmt.Sprintf("%s/%s", time.Now().Format("2006/01/02"), uuid)
+
+	info, err := object.Client.PutObject(c.Request.Context(), bucketName, ojbectName, buf, int64(len(b)), minio.PutObjectOptions{})
+	if err != nil {
+		slog.Error("failed to put object", "error", err)
+		return
+	}
+
 	slog.Info("access log",
 		slog.Time("start", start), slog.Time("end", time.Now()),
 		slog.String("trace", trace),
 		slog.Int("id", log.ID),
 		slog.String("client_ip", c.ClientIP()),
 		slog.String("uuid", uuid),
+		slog.String("object.key", info.Key),
 	)
 }
 

@@ -7,10 +7,12 @@ import (
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi/operations"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/handler"
+	"go.orx.me/echosrv/internal/object"
 )
 
 func main() {
 	db.Init()
+	object.Init()
 	app := core.New(&app.Config{
 		Service: "echo",
 		Router:  handler.Router,
