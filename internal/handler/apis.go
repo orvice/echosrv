@@ -24,7 +24,7 @@ func Ping(c *gin.Context) {
 	_, span := tracer.Start(c.Request.Context(), "sleep")
 	defer span.End()
 	slog.Info("ping", slog.Time("start", time.Now()))
-	go db.Ping()
+	go db.Ping(c.Request.Context())
 	c.JSON(200, gin.H{
 		"message": "pong",
 		"headers": c.Request.Header,

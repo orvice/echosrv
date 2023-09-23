@@ -1,6 +1,7 @@
 package db
 
 import (
+	"context"
 	"log/slog"
 	"os"
 
@@ -9,7 +10,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
-func Ping() {
+func Ping(ctx context.Context) {
 	db, err := otelsql.Open("mysql", os.Getenv("DSN"),
 		otelsql.WithAttributes(semconv.DBSystemSqlite),
 		otelsql.WithDBName("mydb"),
@@ -19,7 +20,7 @@ func Ping() {
 	}
 	defer db.Close()
 
-	if err := db.Ping(); err != nil {
+	if err := db.PingContext(ctx); err != nil {
 		slog.Error("failed to ping ", "error", err)
 	}
 
