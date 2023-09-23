@@ -27,8 +27,8 @@ func Router(r *gin.Engine) {
 }
 
 type accessLog struct {
-	Data    *ent.AccessLog
-	Request *http.Request
+	Data   *ent.AccessLog
+	Header http.Header
 }
 
 func loggingMiddleware(c *gin.Context) {
@@ -49,8 +49,8 @@ func loggingMiddleware(c *gin.Context) {
 	}
 
 	b, err := json.Marshal(accessLog{
-		Data:    log,
-		Request: c.Request,
+		Data:   log,
+		Header: c.Request.Header,
 	})
 	if err != nil {
 		slog.Error("failed to marshal access log", "error", err)
