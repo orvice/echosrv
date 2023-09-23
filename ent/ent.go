@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"go.orx.me/echosrv/ent/accesslog"
 	"go.orx.me/echosrv/ent/group"
 	"go.orx.me/echosrv/ent/user"
 )
@@ -74,8 +75,9 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			group.Table: group.ValidColumn,
-			user.Table:  user.ValidColumn,
+			accesslog.Table: accesslog.ValidColumn,
+			group.Table:     group.ValidColumn,
+			user.Table:      user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

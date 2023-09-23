@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"go.orx.me/echosrv/ent/accesslog"
 	"go.orx.me/echosrv/ent/predicate"
 	"go.orx.me/echosrv/ent/user"
 )
@@ -23,9 +24,588 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeGroup = "Group"
-	TypeUser  = "User"
+	TypeAccessLog = "AccessLog"
+	TypeGroup     = "Group"
+	TypeUser      = "User"
 )
+
+// AccessLogMutation represents an operation that mutates the AccessLog nodes in the graph.
+type AccessLogMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	created_unix    *int
+	addcreated_unix *int
+	_path           *string
+	method          *string
+	ip              *string
+	ua              *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*AccessLog, error)
+	predicates      []predicate.AccessLog
+}
+
+var _ ent.Mutation = (*AccessLogMutation)(nil)
+
+// accesslogOption allows management of the mutation configuration using functional options.
+type accesslogOption func(*AccessLogMutation)
+
+// newAccessLogMutation creates new mutation for the AccessLog entity.
+func newAccessLogMutation(c config, op Op, opts ...accesslogOption) *AccessLogMutation {
+	m := &AccessLogMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAccessLog,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAccessLogID sets the ID field of the mutation.
+func withAccessLogID(id int) accesslogOption {
+	return func(m *AccessLogMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AccessLog
+		)
+		m.oldValue = func(ctx context.Context) (*AccessLog, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AccessLog.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAccessLog sets the old AccessLog of the mutation.
+func withAccessLog(node *AccessLog) accesslogOption {
+	return func(m *AccessLogMutation) {
+		m.oldValue = func(context.Context) (*AccessLog, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AccessLogMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AccessLogMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AccessLogMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AccessLogMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AccessLog.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedUnix sets the "created_unix" field.
+func (m *AccessLogMutation) SetCreatedUnix(i int) {
+	m.created_unix = &i
+	m.addcreated_unix = nil
+}
+
+// CreatedUnix returns the value of the "created_unix" field in the mutation.
+func (m *AccessLogMutation) CreatedUnix() (r int, exists bool) {
+	v := m.created_unix
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedUnix returns the old "created_unix" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldCreatedUnix(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedUnix is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedUnix requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedUnix: %w", err)
+	}
+	return oldValue.CreatedUnix, nil
+}
+
+// AddCreatedUnix adds i to the "created_unix" field.
+func (m *AccessLogMutation) AddCreatedUnix(i int) {
+	if m.addcreated_unix != nil {
+		*m.addcreated_unix += i
+	} else {
+		m.addcreated_unix = &i
+	}
+}
+
+// AddedCreatedUnix returns the value that was added to the "created_unix" field in this mutation.
+func (m *AccessLogMutation) AddedCreatedUnix() (r int, exists bool) {
+	v := m.addcreated_unix
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCreatedUnix resets all changes to the "created_unix" field.
+func (m *AccessLogMutation) ResetCreatedUnix() {
+	m.created_unix = nil
+	m.addcreated_unix = nil
+}
+
+// SetPath sets the "path" field.
+func (m *AccessLogMutation) SetPath(s string) {
+	m._path = &s
+}
+
+// Path returns the value of the "path" field in the mutation.
+func (m *AccessLogMutation) Path() (r string, exists bool) {
+	v := m._path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPath returns the old "path" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldPath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPath: %w", err)
+	}
+	return oldValue.Path, nil
+}
+
+// ResetPath resets all changes to the "path" field.
+func (m *AccessLogMutation) ResetPath() {
+	m._path = nil
+}
+
+// SetMethod sets the "method" field.
+func (m *AccessLogMutation) SetMethod(s string) {
+	m.method = &s
+}
+
+// Method returns the value of the "method" field in the mutation.
+func (m *AccessLogMutation) Method() (r string, exists bool) {
+	v := m.method
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMethod returns the old "method" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldMethod(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMethod is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMethod requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMethod: %w", err)
+	}
+	return oldValue.Method, nil
+}
+
+// ResetMethod resets all changes to the "method" field.
+func (m *AccessLogMutation) ResetMethod() {
+	m.method = nil
+}
+
+// SetIP sets the "ip" field.
+func (m *AccessLogMutation) SetIP(s string) {
+	m.ip = &s
+}
+
+// IP returns the value of the "ip" field in the mutation.
+func (m *AccessLogMutation) IP() (r string, exists bool) {
+	v := m.ip
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIP returns the old "ip" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldIP(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIP is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIP requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIP: %w", err)
+	}
+	return oldValue.IP, nil
+}
+
+// ResetIP resets all changes to the "ip" field.
+func (m *AccessLogMutation) ResetIP() {
+	m.ip = nil
+}
+
+// SetUa sets the "ua" field.
+func (m *AccessLogMutation) SetUa(s string) {
+	m.ua = &s
+}
+
+// Ua returns the value of the "ua" field in the mutation.
+func (m *AccessLogMutation) Ua() (r string, exists bool) {
+	v := m.ua
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUa returns the old "ua" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldUa(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUa is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUa requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUa: %w", err)
+	}
+	return oldValue.Ua, nil
+}
+
+// ResetUa resets all changes to the "ua" field.
+func (m *AccessLogMutation) ResetUa() {
+	m.ua = nil
+}
+
+// Where appends a list predicates to the AccessLogMutation builder.
+func (m *AccessLogMutation) Where(ps ...predicate.AccessLog) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AccessLogMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AccessLogMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AccessLog, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AccessLogMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AccessLogMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AccessLog).
+func (m *AccessLogMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AccessLogMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.created_unix != nil {
+		fields = append(fields, accesslog.FieldCreatedUnix)
+	}
+	if m._path != nil {
+		fields = append(fields, accesslog.FieldPath)
+	}
+	if m.method != nil {
+		fields = append(fields, accesslog.FieldMethod)
+	}
+	if m.ip != nil {
+		fields = append(fields, accesslog.FieldIP)
+	}
+	if m.ua != nil {
+		fields = append(fields, accesslog.FieldUa)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AccessLogMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		return m.CreatedUnix()
+	case accesslog.FieldPath:
+		return m.Path()
+	case accesslog.FieldMethod:
+		return m.Method()
+	case accesslog.FieldIP:
+		return m.IP()
+	case accesslog.FieldUa:
+		return m.Ua()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AccessLogMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		return m.OldCreatedUnix(ctx)
+	case accesslog.FieldPath:
+		return m.OldPath(ctx)
+	case accesslog.FieldMethod:
+		return m.OldMethod(ctx)
+	case accesslog.FieldIP:
+		return m.OldIP(ctx)
+	case accesslog.FieldUa:
+		return m.OldUa(ctx)
+	}
+	return nil, fmt.Errorf("unknown AccessLog field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AccessLogMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedUnix(v)
+		return nil
+	case accesslog.FieldPath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPath(v)
+		return nil
+	case accesslog.FieldMethod:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMethod(v)
+		return nil
+	case accesslog.FieldIP:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIP(v)
+		return nil
+	case accesslog.FieldUa:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUa(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AccessLog field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AccessLogMutation) AddedFields() []string {
+	var fields []string
+	if m.addcreated_unix != nil {
+		fields = append(fields, accesslog.FieldCreatedUnix)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AccessLogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		return m.AddedCreatedUnix()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AccessLogMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCreatedUnix(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AccessLog numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AccessLogMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AccessLogMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AccessLogMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AccessLog nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AccessLogMutation) ResetField(name string) error {
+	switch name {
+	case accesslog.FieldCreatedUnix:
+		m.ResetCreatedUnix()
+		return nil
+	case accesslog.FieldPath:
+		m.ResetPath()
+		return nil
+	case accesslog.FieldMethod:
+		m.ResetMethod()
+		return nil
+	case accesslog.FieldIP:
+		m.ResetIP()
+		return nil
+	case accesslog.FieldUa:
+		m.ResetUa()
+		return nil
+	}
+	return fmt.Errorf("unknown AccessLog field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AccessLogMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AccessLogMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AccessLogMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AccessLogMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AccessLogMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AccessLogMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AccessLogMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown AccessLog unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AccessLogMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown AccessLog edge %s", name)
+}
 
 // GroupMutation represents an operation that mutates the Group nodes in the graph.
 type GroupMutation struct {

@@ -8,6 +8,21 @@ import (
 )
 
 var (
+	// AccessLogsColumns holds the columns for the "access_logs" table.
+	AccessLogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_unix", Type: field.TypeInt},
+		{Name: "path", Type: field.TypeString},
+		{Name: "method", Type: field.TypeString},
+		{Name: "ip", Type: field.TypeString},
+		{Name: "ua", Type: field.TypeString, Unique: true},
+	}
+	// AccessLogsTable holds the schema information for the "access_logs" table.
+	AccessLogsTable = &schema.Table{
+		Name:       "access_logs",
+		Columns:    AccessLogsColumns,
+		PrimaryKey: []*schema.Column{AccessLogsColumns[0]},
+	}
 	// GroupsColumns holds the columns for the "groups" table.
 	GroupsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -33,6 +48,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AccessLogsTable,
 		GroupsTable,
 		UsersTable,
 	}

@@ -9,6 +9,18 @@ import (
 	"go.orx.me/echosrv/ent"
 )
 
+// The AccessLogFunc type is an adapter to allow the use of ordinary
+// function as AccessLog mutator.
+type AccessLogFunc func(context.Context, *ent.AccessLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AccessLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AccessLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccessLogMutation", m)
+}
+
 // The GroupFunc type is an adapter to allow the use of ordinary
 // function as Group mutator.
 type GroupFunc func(context.Context, *ent.GroupMutation) (ent.Value, error)
