@@ -11,9 +11,24 @@ import (
 )
 
 func Router(r *gin.Engine) {
+	r.Use(loggingMiddleware)
 	r.GET("/ping", Ping)
 	r.GET("/healthz", Ping)
 	r.GET("/asc/:text", ASC)
+}
+
+func loggingMiddleware(c *gin.Context) {
+	start := time.Now()
+	c.Next()
+	cli := db.EntClient()
+
+	log, err := cli.AccessLog.Create().SetCreatedUnix(int(start.Unix())).SetMethod(c.Request.Method).
+		SetPath(c.Request.URL.Path).SetIP(c.ClientIP()).SetUa(c.Request.UserAgent()).Save(c.Request.Context())
+	if err != nil {
+		slog.Error("failed to create access log", "error", err)
+		return
+	}
+	slog.Info("access log", slog.Time("start", start), slog.Time("end", time.Now()), slog.Int("id", log.ID))
 }
 
 // Package-level tracer.
