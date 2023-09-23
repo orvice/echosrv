@@ -21,3 +21,6 @@ build: ## build
 
 doc:
 	/usr/local/bin/swagger generate spec -w ./cmd/echosrv  -o ./swagger.json
+
+gen:
+	go generate ./ent
