@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"go.opentelemetry.io/otel"
+	"go.orx.me/echosrv/ent"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/object"
 )
@@ -22,6 +24,11 @@ func Router(r *gin.Engine) {
 	r.GET("/ping", Ping)
 	r.GET("/healthz", Ping)
 	r.GET("/asc/:text", ASC)
+}
+
+type accessLog struct {
+	Data    *ent.AccessLog
+	Request *http.Request
 }
 
 func loggingMiddleware(c *gin.Context) {
@@ -41,7 +48,10 @@ func loggingMiddleware(c *gin.Context) {
 		return
 	}
 
-	b, err := json.Marshal(log)
+	b, err := json.Marshal(accessLog{
+		Data:    log,
+		Request: c.Request,
+	})
 	if err != nil {
 		slog.Error("failed to marshal access log", "error", err)
 		return
@@ -50,7 +60,7 @@ func loggingMiddleware(c *gin.Context) {
 	buf := bytes.NewReader(b)
 	bucketName := os.Getenv("MINIO_BUCKET_NAME")
 
-	ojbectName := fmt.Sprintf("accesslogs/%s/%s", time.Now().Format("2006/01/02"), uuid)
+	ojbectName := fmt.Sprintf("accesslogs/%s/%s.json", time.Now().Format("2006/01/02"), uuid)
 
 	info, err := object.Client.PutObject(c.Request.Context(), bucketName, ojbectName, buf, int64(len(b)), minio.PutObjectOptions{})
 	if err != nil {
