@@ -15,7 +15,8 @@ var (
 		{Name: "path", Type: field.TypeString},
 		{Name: "method", Type: field.TypeString},
 		{Name: "ip", Type: field.TypeString},
-		{Name: "ua", Type: field.TypeString, Unique: true},
+		{Name: "ua", Type: field.TypeString},
+		{Name: "trace", Type: field.TypeString},
 	}
 	// AccessLogsTable holds the schema information for the "access_logs" table.
 	AccessLogsTable = &schema.Table{

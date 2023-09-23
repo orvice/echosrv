@@ -64,6 +64,12 @@ func (alu *AccessLogUpdate) SetUa(s string) *AccessLogUpdate {
 	return alu
 }
 
+// SetTrace sets the "trace" field.
+func (alu *AccessLogUpdate) SetTrace(s string) *AccessLogUpdate {
+	alu.mutation.SetTrace(s)
+	return alu
+}
+
 // Mutation returns the AccessLogMutation object of the builder.
 func (alu *AccessLogUpdate) Mutation() *AccessLogMutation {
 	return alu.mutation
@@ -123,6 +129,9 @@ func (alu *AccessLogUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := alu.mutation.Ua(); ok {
 		_spec.SetField(accesslog.FieldUa, field.TypeString, value)
 	}
+	if value, ok := alu.mutation.Trace(); ok {
+		_spec.SetField(accesslog.FieldTrace, field.TypeString, value)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, alu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{accesslog.Label}
@@ -177,6 +186,12 @@ func (aluo *AccessLogUpdateOne) SetIP(s string) *AccessLogUpdateOne {
 // SetUa sets the "ua" field.
 func (aluo *AccessLogUpdateOne) SetUa(s string) *AccessLogUpdateOne {
 	aluo.mutation.SetUa(s)
+	return aluo
+}
+
+// SetTrace sets the "trace" field.
+func (aluo *AccessLogUpdateOne) SetTrace(s string) *AccessLogUpdateOne {
+	aluo.mutation.SetTrace(s)
 	return aluo
 }
 
@@ -268,6 +283,9 @@ func (aluo *AccessLogUpdateOne) sqlSave(ctx context.Context) (_node *AccessLog, 
 	}
 	if value, ok := aluo.mutation.Ua(); ok {
 		_spec.SetField(accesslog.FieldUa, field.TypeString, value)
+	}
+	if value, ok := aluo.mutation.Trace(); ok {
+		_spec.SetField(accesslog.FieldTrace, field.TypeString, value)
 	}
 	_node = &AccessLog{config: aluo.config}
 	_spec.Assign = _node.assignValues

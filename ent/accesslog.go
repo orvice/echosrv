@@ -25,7 +25,9 @@ type AccessLog struct {
 	// IP holds the value of the "ip" field.
 	IP string `json:"ip,omitempty"`
 	// Ua holds the value of the "ua" field.
-	Ua           string `json:"ua,omitempty"`
+	Ua string `json:"ua,omitempty"`
+	// Trace holds the value of the "trace" field.
+	Trace        string `json:"trace,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -36,7 +38,7 @@ func (*AccessLog) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case accesslog.FieldID, accesslog.FieldCreatedUnix:
 			values[i] = new(sql.NullInt64)
-		case accesslog.FieldPath, accesslog.FieldMethod, accesslog.FieldIP, accesslog.FieldUa:
+		case accesslog.FieldPath, accesslog.FieldMethod, accesslog.FieldIP, accesslog.FieldUa, accesslog.FieldTrace:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -89,6 +91,12 @@ func (al *AccessLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				al.Ua = value.String
 			}
+		case accesslog.FieldTrace:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field trace", values[i])
+			} else if value.Valid {
+				al.Trace = value.String
+			}
 		default:
 			al.selectValues.Set(columns[i], values[i])
 		}
@@ -139,6 +147,9 @@ func (al *AccessLog) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ua=")
 	builder.WriteString(al.Ua)
+	builder.WriteString(", ")
+	builder.WriteString("trace=")
+	builder.WriteString(al.Trace)
 	builder.WriteByte(')')
 	return builder.String()
 }

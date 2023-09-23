@@ -41,6 +41,7 @@ type AccessLogMutation struct {
 	method          *string
 	ip              *string
 	ua              *string
+	trace           *string
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*AccessLog, error)
@@ -345,6 +346,42 @@ func (m *AccessLogMutation) ResetUa() {
 	m.ua = nil
 }
 
+// SetTrace sets the "trace" field.
+func (m *AccessLogMutation) SetTrace(s string) {
+	m.trace = &s
+}
+
+// Trace returns the value of the "trace" field in the mutation.
+func (m *AccessLogMutation) Trace() (r string, exists bool) {
+	v := m.trace
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTrace returns the old "trace" field's value of the AccessLog entity.
+// If the AccessLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccessLogMutation) OldTrace(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTrace is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTrace requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTrace: %w", err)
+	}
+	return oldValue.Trace, nil
+}
+
+// ResetTrace resets all changes to the "trace" field.
+func (m *AccessLogMutation) ResetTrace() {
+	m.trace = nil
+}
+
 // Where appends a list predicates to the AccessLogMutation builder.
 func (m *AccessLogMutation) Where(ps ...predicate.AccessLog) {
 	m.predicates = append(m.predicates, ps...)
@@ -379,7 +416,7 @@ func (m *AccessLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AccessLogMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.created_unix != nil {
 		fields = append(fields, accesslog.FieldCreatedUnix)
 	}
@@ -394,6 +431,9 @@ func (m *AccessLogMutation) Fields() []string {
 	}
 	if m.ua != nil {
 		fields = append(fields, accesslog.FieldUa)
+	}
+	if m.trace != nil {
+		fields = append(fields, accesslog.FieldTrace)
 	}
 	return fields
 }
@@ -413,6 +453,8 @@ func (m *AccessLogMutation) Field(name string) (ent.Value, bool) {
 		return m.IP()
 	case accesslog.FieldUa:
 		return m.Ua()
+	case accesslog.FieldTrace:
+		return m.Trace()
 	}
 	return nil, false
 }
@@ -432,6 +474,8 @@ func (m *AccessLogMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldIP(ctx)
 	case accesslog.FieldUa:
 		return m.OldUa(ctx)
+	case accesslog.FieldTrace:
+		return m.OldTrace(ctx)
 	}
 	return nil, fmt.Errorf("unknown AccessLog field %s", name)
 }
@@ -475,6 +519,13 @@ func (m *AccessLogMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUa(v)
+		return nil
+	case accesslog.FieldTrace:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTrace(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AccessLog field %s", name)
@@ -554,6 +605,9 @@ func (m *AccessLogMutation) ResetField(name string) error {
 		return nil
 	case accesslog.FieldUa:
 		m.ResetUa()
+		return nil
+	case accesslog.FieldTrace:
+		m.ResetTrace()
 		return nil
 	}
 	return fmt.Errorf("unknown AccessLog field %s", name)

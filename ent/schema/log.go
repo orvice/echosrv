@@ -18,6 +18,7 @@ func (AccessLog) Fields() []ent.Field {
 		field.String("method"),
 		field.String("ip"),
 		field.String("ua"),
+		field.String("trace"),
 	}
 }
 

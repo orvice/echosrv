@@ -77,6 +77,11 @@ func Ua(v string) predicate.AccessLog {
 	return predicate.AccessLog(sql.FieldEQ(FieldUa, v))
 }
 
+// Trace applies equality check predicate on the "trace" field. It's identical to TraceEQ.
+func Trace(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldEQ(FieldTrace, v))
+}
+
 // CreatedUnixEQ applies the EQ predicate on the "created_unix" field.
 func CreatedUnixEQ(v int) predicate.AccessLog {
 	return predicate.AccessLog(sql.FieldEQ(FieldCreatedUnix, v))
@@ -375,6 +380,71 @@ func UaEqualFold(v string) predicate.AccessLog {
 // UaContainsFold applies the ContainsFold predicate on the "ua" field.
 func UaContainsFold(v string) predicate.AccessLog {
 	return predicate.AccessLog(sql.FieldContainsFold(FieldUa, v))
+}
+
+// TraceEQ applies the EQ predicate on the "trace" field.
+func TraceEQ(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldEQ(FieldTrace, v))
+}
+
+// TraceNEQ applies the NEQ predicate on the "trace" field.
+func TraceNEQ(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldNEQ(FieldTrace, v))
+}
+
+// TraceIn applies the In predicate on the "trace" field.
+func TraceIn(vs ...string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldIn(FieldTrace, vs...))
+}
+
+// TraceNotIn applies the NotIn predicate on the "trace" field.
+func TraceNotIn(vs ...string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldNotIn(FieldTrace, vs...))
+}
+
+// TraceGT applies the GT predicate on the "trace" field.
+func TraceGT(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldGT(FieldTrace, v))
+}
+
+// TraceGTE applies the GTE predicate on the "trace" field.
+func TraceGTE(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldGTE(FieldTrace, v))
+}
+
+// TraceLT applies the LT predicate on the "trace" field.
+func TraceLT(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldLT(FieldTrace, v))
+}
+
+// TraceLTE applies the LTE predicate on the "trace" field.
+func TraceLTE(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldLTE(FieldTrace, v))
+}
+
+// TraceContains applies the Contains predicate on the "trace" field.
+func TraceContains(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldContains(FieldTrace, v))
+}
+
+// TraceHasPrefix applies the HasPrefix predicate on the "trace" field.
+func TraceHasPrefix(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldHasPrefix(FieldTrace, v))
+}
+
+// TraceHasSuffix applies the HasSuffix predicate on the "trace" field.
+func TraceHasSuffix(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldHasSuffix(FieldTrace, v))
+}
+
+// TraceEqualFold applies the EqualFold predicate on the "trace" field.
+func TraceEqualFold(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldEqualFold(FieldTrace, v))
+}
+
+// TraceContainsFold applies the ContainsFold predicate on the "trace" field.
+func TraceContainsFold(v string) predicate.AccessLog {
+	return predicate.AccessLog(sql.FieldContainsFold(FieldTrace, v))
 }
 
 // And groups predicates with the AND operator between them.

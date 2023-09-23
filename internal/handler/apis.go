@@ -22,13 +22,21 @@ func loggingMiddleware(c *gin.Context) {
 	c.Next()
 	cli := db.EntClient()
 
+	trace := c.GetHeader("Traceparent")
+
 	log, err := cli.AccessLog.Create().SetCreatedUnix(int(start.Unix())).SetMethod(c.Request.Method).
-		SetPath(c.Request.URL.Path).SetIP(c.ClientIP()).SetUa(c.Request.UserAgent()).Save(c.Request.Context())
+		SetPath(c.Request.URL.Path).SetIP(c.ClientIP()).SetUa(c.Request.UserAgent()).
+		SetTrace(trace).
+		Save(c.Request.Context())
 	if err != nil {
 		slog.Error("failed to create access log", "error", err)
 		return
 	}
-	slog.Info("access log", slog.Time("start", start), slog.Time("end", time.Now()), slog.Int("id", log.ID))
+	slog.Info("access log",
+		slog.Time("start", start), slog.Time("end", time.Now()),
+		slog.String("trace", trace),
+		slog.Int("id", log.ID),
+	)
 }
 
 // Package-level tracer.

@@ -21,6 +21,8 @@ const (
 	FieldIP = "ip"
 	// FieldUa holds the string denoting the ua field in the database.
 	FieldUa = "ua"
+	// FieldTrace holds the string denoting the trace field in the database.
+	FieldTrace = "trace"
 	// Table holds the table name of the accesslog in the database.
 	Table = "access_logs"
 )
@@ -33,6 +35,7 @@ var Columns = []string{
 	FieldMethod,
 	FieldIP,
 	FieldUa,
+	FieldTrace,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -76,4 +79,9 @@ func ByIP(opts ...sql.OrderTermOption) OrderOption {
 // ByUa orders the results by the ua field.
 func ByUa(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUa, opts...).ToFunc()
+}
+
+// ByTrace orders the results by the trace field.
+func ByTrace(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTrace, opts...).ToFunc()
 }

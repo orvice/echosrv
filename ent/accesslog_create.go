@@ -49,6 +49,12 @@ func (alc *AccessLogCreate) SetUa(s string) *AccessLogCreate {
 	return alc
 }
 
+// SetTrace sets the "trace" field.
+func (alc *AccessLogCreate) SetTrace(s string) *AccessLogCreate {
+	alc.mutation.SetTrace(s)
+	return alc
+}
+
 // Mutation returns the AccessLogMutation object of the builder.
 func (alc *AccessLogCreate) Mutation() *AccessLogMutation {
 	return alc.mutation
@@ -98,6 +104,9 @@ func (alc *AccessLogCreate) check() error {
 	if _, ok := alc.mutation.Ua(); !ok {
 		return &ValidationError{Name: "ua", err: errors.New(`ent: missing required field "AccessLog.ua"`)}
 	}
+	if _, ok := alc.mutation.Trace(); !ok {
+		return &ValidationError{Name: "trace", err: errors.New(`ent: missing required field "AccessLog.trace"`)}
+	}
 	return nil
 }
 
@@ -143,6 +152,10 @@ func (alc *AccessLogCreate) createSpec() (*AccessLog, *sqlgraph.CreateSpec) {
 	if value, ok := alc.mutation.Ua(); ok {
 		_spec.SetField(accesslog.FieldUa, field.TypeString, value)
 		_node.Ua = value
+	}
+	if value, ok := alc.mutation.Trace(); ok {
+		_spec.SetField(accesslog.FieldTrace, field.TypeString, value)
+		_node.Trace = value
 	}
 	return _node, _spec
 }
