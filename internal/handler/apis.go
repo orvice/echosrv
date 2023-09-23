@@ -31,6 +31,14 @@ func Ping(c *gin.Context) {
 		slog.String("user-agent", c.Request.UserAgent()),
 	)
 	db.Ping(c.Request.Context())
+
+	cli := db.EntClient()
+	users, err := cli.User.Query().All(c.Request.Context())
+	if err != nil {
+		slog.Error("failed to query users", "error", err)
+	}
+	slog.Info("users", slog.Int("users_count", len(users)))
+
 	c.JSON(200, gin.H{
 		"message": "pong",
 		"headers": c.Request.Header,
