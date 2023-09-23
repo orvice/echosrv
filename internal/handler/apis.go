@@ -6,6 +6,7 @@ import (
 
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	"go.orx.me/echosrv/internal/db"
 )
@@ -23,9 +24,10 @@ func loggingMiddleware(c *gin.Context) {
 	cli := db.EntClient()
 
 	trace := c.GetHeader("Traceparent")
+	uuid := uuid.New().String()
 
 	log, err := cli.AccessLog.Create().SetCreatedUnix(int(start.Unix())).SetMethod(c.Request.Method).
-		SetPath(c.Request.URL.Path).SetIP(c.ClientIP()).SetUa(c.Request.UserAgent()).
+		SetPath(c.Request.URL.Path).SetIP(c.ClientIP()).SetUa(uuid).
 		SetTrace(trace).
 		Save(c.Request.Context())
 	if err != nil {
@@ -36,6 +38,8 @@ func loggingMiddleware(c *gin.Context) {
 		slog.Time("start", start), slog.Time("end", time.Now()),
 		slog.String("trace", trace),
 		slog.Int("id", log.ID),
+		slog.String("client_ip", c.ClientIP()),
+		slog.String("uuid", uuid),
 	)
 }
 
