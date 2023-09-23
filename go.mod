@@ -9,7 +9,7 @@ require (
 )
 
 require (
-	butterfly.orx.me/core v0.0.0-20230909075100-99d49a7d2eda
+	butterfly.orx.me/core v0.0.0-20230923071934-942adb87718f
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/prometheus/client_golang v1.16.0
