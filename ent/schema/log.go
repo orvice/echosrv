@@ -17,8 +17,7 @@ func (AccessLog) Fields() []ent.Field {
 		field.String("path"),
 		field.String("method"),
 		field.String("ip"),
-		field.String("ua").
-			Unique(),
+		field.String("ua"),
 	}
 }
 
