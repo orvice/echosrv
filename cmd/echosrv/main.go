@@ -8,9 +8,11 @@ import (
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/handler"
 	"go.orx.me/echosrv/internal/object"
+	"go.orx.me/echosrv/internal/profiler"
 )
 
 func main() {
+	go profiler.Init()
 	db.Init()
 	object.Init()
 	app := core.New(&app.Config{

@@ -14,9 +14,11 @@ require (
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.3.1
+	github.com/grafana/pyroscope-go v1.0.3
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/prometheus/client_golang v1.16.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.2
+	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.40.0
 	go.opentelemetry.io/otel/metric v1.18.0
 	go.opentelemetry.io/otel/sdk/metric v0.40.0
@@ -59,6 +61,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/grafana/pyroscope-go/godeltaprof v0.1.4 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/jessevdk/go-flags v1.5.0 // indirect
@@ -88,7 +91,6 @@ require (
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.mongodb.org/mongo-driver v1.5.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.43.0 // indirect
-	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.44.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.17.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.17.0 // indirect
