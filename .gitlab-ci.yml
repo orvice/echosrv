@@ -69,7 +69,7 @@ coverage:
     - echo $versino $arch
   parallel:
       matrix:
-        - version: ["1.17", "1.18"]
+        - version: ["1.21"]
 
 deploy-testing:
   stage: deploy
