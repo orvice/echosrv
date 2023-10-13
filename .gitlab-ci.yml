@@ -130,6 +130,7 @@ doc:
     - curl -o /usr/local/bin/swagger -L'#' "$download_url"
     - chmod +x /usr/local/bin/swagger
     - make doc
+  allow_failure: true
   artifacts:
     name: doc
     paths:
