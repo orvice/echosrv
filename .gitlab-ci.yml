@@ -120,6 +120,8 @@ deploy-prod:
 doc:
   stage: doc
   image: golang
+  before_script:
+    - go version
   script:
     - go mod download
     - make prepare
