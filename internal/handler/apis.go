@@ -24,6 +24,7 @@ func Router(r *gin.Engine) {
 	r.GET("/ping", Ping)
 	r.GET("/healthz", Ping)
 	r.GET("/asc/:text", ASC)
+	oauthRouter(r)
 }
 
 type accessLog struct {
