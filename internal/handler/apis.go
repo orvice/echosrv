@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -106,13 +107,15 @@ func Ping(c *gin.Context) {
 
 	t := time.Now().Unix()
 	if t%9 == 0 {
-		// clean old data
-		rows, err := cli.AccessLog.Delete().Where(accesslog.CreatedUnixLT(int(t - 86400))).Exec(c.Request.Context())
-		if err != nil {
-			slog.Error("failed to delete old access log", "error", err)
-		} else {
-			slog.Info("delete old access log", slog.Int("rows", rows))
-		}
+		go func() {
+			// clean old data
+			rows, err := cli.AccessLog.Delete().Where(accesslog.CreatedUnixLT(int(t - 86400))).Exec(context.Background())
+			if err != nil {
+				slog.Error("failed to delete old access log", "error", err)
+			} else {
+				slog.Info("delete old access log", slog.Int("rows", rows))
+			}
+		}()
 	}
 
 	c.JSON(200, gin.H{
