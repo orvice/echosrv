@@ -15,6 +15,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"go.opentelemetry.io/otel"
 	"go.orx.me/echosrv/ent"
+	"go.orx.me/echosrv/ent/accesslog"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/object"
 )
@@ -102,6 +103,17 @@ func Ping(c *gin.Context) {
 		slog.Error("failed to query users", "error", err)
 	}
 	slog.Info("users", slog.Int("users_count", len(users)))
+
+	t := time.Now().Unix()
+	if t%9 == 0 {
+		// clean old data
+		rows, err := cli.AccessLog.Delete().Where(accesslog.CreatedUnixLT(int(t - 86400))).Exec(c.Request.Context())
+		if err != nil {
+			slog.Error("failed to delete old access log", "error", err)
+		} else {
+			slog.Info("delete old access log", slog.Int("rows", rows))
+		}
+	}
 
 	c.JSON(200, gin.H{
 		"message": "pong",
