@@ -109,7 +109,9 @@ func Ping(c *gin.Context) {
 	if t%9 == 0 {
 		go func() {
 			// clean old data
-			rows, err := cli.AccessLog.Delete().Where(accesslog.CreatedUnixLT(int(t - 86400))).Exec(context.Background())
+			rows, err := cli.AccessLog.Delete().
+				Where(accesslog.CreatedUnixLT(int(t - 86400))).
+				Exec(context.Background())
 			if err != nil {
 				slog.Error("failed to delete old access log", "error", err)
 			} else {
