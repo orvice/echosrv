@@ -97,13 +97,7 @@ func Ping(c *gin.Context) {
 		slog.String("user-agent", c.Request.UserAgent()),
 	)
 	db.Ping(c.Request.Context())
-
 	cli := db.EntClient()
-	users, err := cli.User.Query().All(c.Request.Context())
-	if err != nil {
-		slog.Error("failed to query users", "error", err)
-	}
-	slog.Info("users", slog.Int("users_count", len(users)))
 
 	t := time.Now().Unix()
 	if t%9 == 0 {
@@ -129,4 +123,13 @@ func Ping(c *gin.Context) {
 func ASC(c *gin.Context) {
 	myFigure := figure.NewFigure(c.Param("text"), "", true)
 	c.String(200, myFigure.String())
+}
+
+func users() {
+	cli := db.EntClient()
+	users, err := cli.User.Query().All(context.Background())
+	if err != nil {
+		slog.Error("failed to query users", "error", err)
+	}
+	slog.Info("users", slog.Int("users_count", len(users)))
 }
