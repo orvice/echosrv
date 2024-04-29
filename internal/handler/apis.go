@@ -17,8 +17,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
-	api "go.opentelemetry.io/otel/metric"
 	"go.orx.me/echosrv/ent"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/object"
@@ -26,11 +26,15 @@ import (
 
 var (
 	counter metric.Int64Counter
+	opt     = metric.WithAttributes(
+		attribute.Key("A").String("B"),
+		attribute.Key("C").String("D"),
+	)
 )
 
 func Router(r *gin.Engine) {
 	var err error
-	counter, err = otel.Meter("api").Int64Counter("foo", api.WithDescription("a simple counter"))
+	counter, err = otel.Meter("api").Int64Counter("foo", metric.WithDescription("a simple counter"))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -103,7 +107,7 @@ func loggingMiddleware(c *gin.Context) {
 		slog.String("object.key", info.Key),
 		slog.String("object.etag", info.ETag),
 	)
-	counter.Add(c.Request.Context(), 1)
+	counter.Add(c.Request.Context(), 1, opt)
 }
 
 // Package-level tracer.
