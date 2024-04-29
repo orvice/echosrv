@@ -2,7 +2,6 @@ package handler
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -18,13 +17,23 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/metric"
+	api "go.opentelemetry.io/otel/metric"
 	"go.orx.me/echosrv/ent"
-	"go.orx.me/echosrv/ent/accesslog"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/object"
 )
 
+var (
+	counter metric.Int64Counter
+)
+
 func Router(r *gin.Engine) {
+	var err error
+	counter, err = otel.Meter("api").Int64Counter("foo", api.WithDescription("a simple counter"))
+	if err != nil {
+		fmt.Println(err)
+	}
 	r.Use(loggingMiddleware)
 	r.GET("/ping", Ping)
 	r.GET("/healthz", Ping)
@@ -94,6 +103,7 @@ func loggingMiddleware(c *gin.Context) {
 		slog.String("object.key", info.Key),
 		slog.String("object.etag", info.ETag),
 	)
+	counter.Add(c.Request.Context(), 1)
 }
 
 // Package-level tracer.
@@ -111,22 +121,6 @@ func Ping(c *gin.Context) {
 		slog.String("user-agent", c.Request.UserAgent()),
 	)
 	db.Ping(c.Request.Context())
-	cli := db.EntClient()
-
-	t := time.Now().Unix()
-	if t%30 == 0 {
-		go func() {
-			// clean old data
-			rows, err := cli.AccessLog.Delete().
-				Where(accesslog.CreatedUnixLT(int(t - 86400))).
-				Exec(context.Background())
-			if err != nil {
-				slog.Error("failed to delete old access log", "error", err)
-			} else {
-				slog.Info("delete old access log", slog.Int("rows", rows))
-			}
-		}()
-	}
 
 	c.JSON(200, gin.H{
 		"message": "pong",
