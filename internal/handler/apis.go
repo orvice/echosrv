@@ -10,10 +10,13 @@ import (
 	"os"
 	"time"
 
+	botel "butterfly.orx.me/core/observe/otel"
 	"github.com/common-nighthawk/go-figure"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel"
 	"go.orx.me/echosrv/ent"
 	"go.orx.me/echosrv/ent/accesslog"
@@ -26,7 +29,18 @@ func Router(r *gin.Engine) {
 	r.GET("/ping", Ping)
 	r.GET("/healthz", Ping)
 	r.GET("/asc/:text", ASC)
+	r.GET("/metric", prometheusHandler())
 	oauthRouter(r)
+}
+
+func prometheusHandler() gin.HandlerFunc {
+	h := promhttp.InstrumentMetricHandler(
+		botel.PrometheusRegistry(),
+		promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{}))
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }
 
 type accessLog struct {
