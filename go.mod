@@ -9,7 +9,7 @@ require (
 )
 
 require (
-	butterfly.orx.me/core v0.0.0-20240505115431-2b969721ab48
+	butterfly.orx.me/core v0.0.0-20240603065556-56933967bb63
 	connectrpc.com/connect v1.14.0
 	entgo.io/ent v0.12.4
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be

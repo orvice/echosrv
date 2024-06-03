@@ -1,7 +1,7 @@
 ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 h1:JnYs/y8RJ3+MiIUp+3RgyyeO48VHLAZimqiaZYnMKk8=
 ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935/go.mod h1:isZrlzJ5cpoCoKFoY9knZug7Lq4pP1cm8g3XciLZ0Pw=
-butterfly.orx.me/core v0.0.0-20240505115431-2b969721ab48 h1:2tA+qlCDAH2l8jxKzE0CdeSNwi2P0VH4oY4pRHjQB/4=
-butterfly.orx.me/core v0.0.0-20240505115431-2b969721ab48/go.mod h1:wz+nA1eiWf3Cmb9mbHMF/twMcqEVI1CkaHuhDQy+QyY=
+butterfly.orx.me/core v0.0.0-20240603065556-56933967bb63 h1:sUniDN6O/pxrP6s7wIlw/NerALkodSN+n88KWjxNF2Y=
+butterfly.orx.me/core v0.0.0-20240603065556-56933967bb63/go.mod h1:wz+nA1eiWf3Cmb9mbHMF/twMcqEVI1CkaHuhDQy+QyY=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.38.0/go.mod h1:990N+gfupTy94rShfmMCWGDn0LpTmnzTp2qbd1dvSRU=
