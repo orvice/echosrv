@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 
 	"butterfly.orx.me/core"
 	"butterfly.orx.me/core/app"
@@ -29,6 +30,7 @@ func NewApp(lc fx.Lifecycle) *app.App {
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
+			slog.Info("stop app")
 			return nil
 		},
 	})
