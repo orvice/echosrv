@@ -26,6 +26,7 @@ func NewApp(lc fx.Lifecycle) *app.App {
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
+			slog.Info("app run")
 			go app.Run()
 			return nil
 		},
@@ -40,5 +41,6 @@ func NewApp(lc fx.Lifecycle) *app.App {
 func main() {
 	fx.New(
 		fx.Provide(NewApp),
+		fx.Invoke(func(*app.App) {}),
 	).Run()
 }
