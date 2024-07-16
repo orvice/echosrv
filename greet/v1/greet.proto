@@ -3,6 +3,7 @@ syntax = "proto3";
 package greet.v1;
 
 option go_package = "go.orx.me/echosrv/gen/greet/v1;greetv1";
+import "google/api/annotations.proto";
 
 message GreetRequest {
   string name = 1;
@@ -13,5 +14,10 @@ message GreetResponse {
 }
 
 service GreetService {
-  rpc Greet(GreetRequest) returns (GreetResponse) {}
+  rpc Greet(GreetRequest) returns (GreetResponse) {
+    option (google.api.http) = {
+            post: "/v1/greet"
+            body: "*"
+          };
+  }
 }
