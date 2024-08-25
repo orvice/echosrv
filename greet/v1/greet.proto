@@ -13,6 +13,8 @@ message GreetResponse {
   string greeting = 1;
 }
 
+message HealthRequest{}
+
 service GreetService {
   rpc Greet(GreetRequest) returns (GreetResponse) {
     option (google.api.http) = {
