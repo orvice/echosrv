@@ -35,17 +35,21 @@ const (
 const (
 	// GreetServiceGreetProcedure is the fully-qualified name of the GreetService's Greet RPC.
 	GreetServiceGreetProcedure = "/greet.v1.GreetService/Greet"
+	// GreetServiceHealthProcedure is the fully-qualified name of the GreetService's Health RPC.
+	GreetServiceHealthProcedure = "/greet.v1.GreetService/Health"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	greetServiceServiceDescriptor     = v1.File_greet_v1_greet_proto.Services().ByName("GreetService")
-	greetServiceGreetMethodDescriptor = greetServiceServiceDescriptor.Methods().ByName("Greet")
+	greetServiceServiceDescriptor      = v1.File_greet_v1_greet_proto.Services().ByName("GreetService")
+	greetServiceGreetMethodDescriptor  = greetServiceServiceDescriptor.Methods().ByName("Greet")
+	greetServiceHealthMethodDescriptor = greetServiceServiceDescriptor.Methods().ByName("Health")
 )
 
 // GreetServiceClient is a client for the greet.v1.GreetService service.
 type GreetServiceClient interface {
 	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+	Health(context.Context, *connect.Request[v1.HealthRequest]) (*connect.Response[v1.HealthResponse], error)
 }
 
 // NewGreetServiceClient constructs a client for the greet.v1.GreetService service. By default, it
@@ -64,12 +68,19 @@ func NewGreetServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(greetServiceGreetMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		health: connect.NewClient[v1.HealthRequest, v1.HealthResponse](
+			httpClient,
+			baseURL+GreetServiceHealthProcedure,
+			connect.WithSchema(greetServiceHealthMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // greetServiceClient implements GreetServiceClient.
 type greetServiceClient struct {
-	greet *connect.Client[v1.GreetRequest, v1.GreetResponse]
+	greet  *connect.Client[v1.GreetRequest, v1.GreetResponse]
+	health *connect.Client[v1.HealthRequest, v1.HealthResponse]
 }
 
 // Greet calls greet.v1.GreetService.Greet.
@@ -77,9 +88,15 @@ func (c *greetServiceClient) Greet(ctx context.Context, req *connect.Request[v1.
 	return c.greet.CallUnary(ctx, req)
 }
 
+// Health calls greet.v1.GreetService.Health.
+func (c *greetServiceClient) Health(ctx context.Context, req *connect.Request[v1.HealthRequest]) (*connect.Response[v1.HealthResponse], error) {
+	return c.health.CallUnary(ctx, req)
+}
+
 // GreetServiceHandler is an implementation of the greet.v1.GreetService service.
 type GreetServiceHandler interface {
 	Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error)
+	Health(context.Context, *connect.Request[v1.HealthRequest]) (*connect.Response[v1.HealthResponse], error)
 }
 
 // NewGreetServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -94,10 +111,18 @@ func NewGreetServiceHandler(svc GreetServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(greetServiceGreetMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	greetServiceHealthHandler := connect.NewUnaryHandler(
+		GreetServiceHealthProcedure,
+		svc.Health,
+		connect.WithSchema(greetServiceHealthMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/greet.v1.GreetService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case GreetServiceGreetProcedure:
 			greetServiceGreetHandler.ServeHTTP(w, r)
+		case GreetServiceHealthProcedure:
+			greetServiceHealthHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -109,4 +134,8 @@ type UnimplementedGreetServiceHandler struct{}
 
 func (UnimplementedGreetServiceHandler) Greet(context.Context, *connect.Request[v1.GreetRequest]) (*connect.Response[v1.GreetResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greet.v1.GreetService.Greet is not implemented"))
+}
+
+func (UnimplementedGreetServiceHandler) Health(context.Context, *connect.Request[v1.HealthRequest]) (*connect.Response[v1.HealthResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greet.v1.GreetService.Health is not implemented"))
 }

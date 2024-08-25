@@ -57,6 +57,24 @@ func local_request_GreetService_Greet_0(ctx context.Context, marshaler runtime.M
 
 }
 
+func request_GreetService_Health_0(ctx context.Context, marshaler runtime.Marshaler, client GreetServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq HealthRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.Health(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_GreetService_Health_0(ctx context.Context, marshaler runtime.Marshaler, server GreetServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq HealthRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.Health(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 // RegisterGreetServiceHandlerServer registers the http handlers for service GreetService to "mux".
 // UnaryRPC     :call GreetServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -71,7 +89,7 @@ func RegisterGreetServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/v1/greet"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/greet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -85,6 +103,31 @@ func RegisterGreetServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		}
 
 		forward_GreetService_Greet_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_GreetService_Health_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/health"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_GreetService_Health_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_GreetService_Health_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -135,7 +178,7 @@ func RegisterGreetServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/v1/greet"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/greet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -151,13 +194,39 @@ func RegisterGreetServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
+	mux.Handle("GET", pattern_GreetService_Health_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/health"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_GreetService_Health_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_GreetService_Health_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
 var (
-	pattern_GreetService_Greet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "greet"}, ""))
+	pattern_GreetService_Greet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"greet"}, ""))
+
+	pattern_GreetService_Health_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"health"}, ""))
 )
 
 var (
 	forward_GreetService_Greet_0 = runtime.ForwardResponseMessage
+
+	forward_GreetService_Health_0 = runtime.ForwardResponseMessage
 )

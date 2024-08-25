@@ -8,11 +8,13 @@ import (
 	"butterfly.orx.me/core/app"
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi"
 	_ "github.com/go-swagger/go-swagger/examples/tutorials/todo-list/server-complete/restapi/operations"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"go.orx.me/echosrv/internal/db"
 	"go.orx.me/echosrv/internal/handler"
 	"go.orx.me/echosrv/internal/object"
 	"go.orx.me/echosrv/internal/profiler"
 	"go.uber.org/fx"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func NewApp(lc fx.Lifecycle) *app.App {
@@ -39,6 +41,15 @@ func NewApp(lc fx.Lifecycle) *app.App {
 }
 
 func main() {
+
+	gwMux := runtime.NewServeMux(
+		runtime.WithMarshalerOption(runtime.MIMEWildcard, &runtime.JSONPb{
+			MarshalOptions: protojson.MarshalOptions{
+				EmitUnpopulated: true,
+			},
+		}),
+	)
+
 	fx.New(
 		fx.Provide(NewApp),
 		fx.Invoke(func(*app.App) {}),
