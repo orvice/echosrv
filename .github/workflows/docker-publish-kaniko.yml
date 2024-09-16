@@ -6,8 +6,6 @@ name: Kaniko
 # documentation.
 
 on:
-  schedule:
-    - cron: '43 12 * * *'
   push:
     branches: [ "master" ]
     # Publish semver tags as releases.

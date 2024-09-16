@@ -20,14 +20,14 @@ message HealthResponse{}
 service GreetService {
   rpc Greet(GreetRequest) returns (GreetResponse) {
     option (google.api.http) = {
-            post: "/greet"
+            post: "/gw/greet"
             body: "*"
           };
   }
 
   rpc Health(HealthRequest) returns (HealthResponse) {
     option (google.api.http) = {
-          get: "/health",
+          get: "/gw/health",
     };
   }
 }

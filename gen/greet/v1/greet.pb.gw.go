@@ -89,7 +89,7 @@ func RegisterGreetServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/greet"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/gw/greet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -114,7 +114,7 @@ func RegisterGreetServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/health"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/gw/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -178,7 +178,7 @@ func RegisterGreetServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/greet"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Greet", runtime.WithHTTPPathPattern("/gw/greet"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -200,7 +200,7 @@ func RegisterGreetServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/health"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/greet.v1.GreetService/Health", runtime.WithHTTPPathPattern("/gw/health"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -220,9 +220,9 @@ func RegisterGreetServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_GreetService_Greet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"greet"}, ""))
+	pattern_GreetService_Greet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"gw", "greet"}, ""))
 
-	pattern_GreetService_Health_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"health"}, ""))
+	pattern_GreetService_Health_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"gw", "health"}, ""))
 )
 
 var (
