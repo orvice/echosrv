@@ -18,8 +18,8 @@ func (s *GreetServer) Health(context.Context, *greetv1.HealthRequest) (*greetv1.
 	return &greetv1.HealthResponse{}, nil
 }
 
-func MuxHandler() {
+func MuxHandler() *runtime.ServeMux {
 	m := runtime.NewServeMux()
 	greetv1.RegisterGreetServiceHandlerServer(context.Background(), m, &GreetServer{})
-
+	return m
 }

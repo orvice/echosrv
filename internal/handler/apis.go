@@ -44,6 +44,7 @@ func Router(r *gin.Engine) {
 	r.GET("/asc/:text", ASC)
 	r.GET("/metric", prometheusHandler())
 	oauthRouter(r)
+	r.Any(":any", gin.WrapF(MuxHandler().ServeHTTP))
 }
 
 func prometheusHandler() gin.HandlerFunc {
